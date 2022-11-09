@@ -1,8 +1,12 @@
 import { useState } from "react";
 import "./App.css";
+import SocialMedia from "./components/SocialMedia/SocialMedia";
 import Compressor from "compressorjs";
 
 function App() {
+  const [stateImgFile, setStateImgFile] = useState();
+  const [demoActive, setDemoActive] = useState(false);
+
   const [firstImage, setFirstImage] = useState();
   const [firstImageSize, setFirstImageSize] = useState();
 
@@ -12,6 +16,7 @@ function App() {
   const submitHandler = (e) => {
     e.preventDefault();
     let imgFile = e.target.files[0];
+    setStateImgFile(imgFile);
     setStateImages(imgFile, "first");
   };
 
@@ -22,20 +27,18 @@ function App() {
     reader.onload = (event) => {
       let img_url = event.target.result;
       if (state === "first") {
-        console.log(imgFile.size);
         setFirstImage(img_url);
         setFirstImageSize(imgFile.size);
-        compressFile(imgFile, img_url);
+        compressFile(imgFile);
       }
       if (state === "compressed") {
-        console.log(imgFile.size);
         setCompressedImage(img_url);
         setCompressedImageSize(imgFile.size);
       }
     };
   };
 
-  const compressFile = (file, img_url) => {
+  const compressFile = (file) => {
     new Compressor(file, {
       quality: 0.1,
       success(result) {
@@ -46,38 +49,45 @@ function App() {
 
   return (
     <div className="App">
-      <div className="upload-container">
-        <div>
-          <h3>Upload file!</h3>
-          <input
-            type="file"
-            accept=".jpg, .jpeg, .png, .gif, .mp4"
-            onChange={(e) => {
-              submitHandler(e);
-            }}
-          />
-        </div>
-      </div>
-
-      <br />
-      <div className="image-container">
-        <div>
-          <h2>Before Compression</h2>
-          <img src={firstImage} />
-          <h3>Size: {Math.floor(firstImageSize / 1000)}kb</h3>
-        </div>
-        <div>
-          <p>quality</p>
-          <input type="range" min="0" max="10" />
-          <h2>After Compression</h2>
-          <img src={compressedImage} />
-          <h3>Size: {Math.floor(compressedImageSize / 1000)}kb</h3>
-        </div>
-      </div>
-      <br />
-      <div>
-        <h1>Visual Example uses for compressed image</h1>
-      </div>
+      <button
+      className="demo-trigger"
+        onClick={() =>
+          demoActive ? setDemoActive(false) : setDemoActive(true)
+        }
+      >
+        {" "}
+        Demo{" "}
+      </button>
+      {!demoActive ? (
+        <>
+          <div className="upload-container">
+            <div>
+              <h3>Upload file!</h3>
+              <input
+                type="file"
+                accept=".jpg, .jpeg, .png, .gif, .mp4"
+                onChange={(e) => {
+                  submitHandler(e);
+                }}
+              />
+            </div>
+          </div>
+          <div className="image-container">
+            <div>
+              <h2>Before Compression</h2>
+              <img src={firstImage} />
+              <h3>Size: {Math.floor(firstImageSize / 1000)}kb</h3>
+            </div>
+            <div>
+              <h2>After Compression</h2>
+              <img src={compressedImage} />
+              <h3>Size: {Math.floor(compressedImageSize / 1000)}kb</h3>
+            </div>
+          </div>
+        </>
+      ) : (
+        <SocialMedia imgFile={stateImgFile} />
+      )}
     </div>
   );
 }

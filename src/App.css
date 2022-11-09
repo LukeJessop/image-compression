@@ -8,6 +8,15 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+.demo-trigger{
+  position: fixed;
+  background-color: orange;
+  border: none;
+  border-radius: 6%;
+  z-index: 20;
+  top: 10px;
+  left: 10px;
+}
 
 .image-container{
   width: 100%;
@@ -29,9 +38,8 @@
   flex-direction: column;
   overflow: scroll;
 }
-
 .image-container div img{
-  height: 60%;
+  width: 60%;
 }
 button{
   height: 40px;
@@ -54,4 +62,8 @@ button{
   overflow: scroll;
   justify-content: center;
  }
+
+.image-container div img{
+  width: 100%;
+}
 }
